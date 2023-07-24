@@ -1,0 +1,4 @@
+class AppConfig {
+  static const edmamAppId = "";
+  static const edmamAppKey = "";
+}
