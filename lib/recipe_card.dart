@@ -19,10 +19,19 @@ class RecipeCard extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              recipe.image,
+              recipe.imageUrl,
               height: 152,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // not sure if this works, since still sometimes breaks on bad image urls but can't reliably reproduce
+                return Image.asset(
+                  'assets/placeholder_image.png', // Replace with your placeholder image asset
+                  height: 152,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
             ListTile(
               title: Text(recipe.name),

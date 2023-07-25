@@ -1,7 +1,7 @@
 class Recipe {
   final String name;
   final String url;
-  final String image;
+  final String imageUrl;
 
-  Recipe({required this.name, required this.url, required this.image});
+  Recipe({required this.name, required this.url, required this.imageUrl});
 }

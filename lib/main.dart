@@ -39,11 +39,19 @@ class _MyHomePageState extends State<MyHomePage> {
   bool peanutsChecked = false;
   bool soyChecked = false;
   bool glutenChecked = false;
+  bool error = false;
 
   List<Recipe> recipes = [];
 
   Future<void> fetchData() async {
     recipes.clear();
+    setState(() {
+      error = false;
+    });
+
+    if (!wheatChecked && !peanutsChecked && !soyChecked && !glutenChecked) {
+      return;
+    }
 
     const appId = AppConfig.edmamAppId;
     const appKey = AppConfig.edmamAppKey;
@@ -78,12 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
         for (var hit in hits) {
           final recipe = hit['recipe'];
           final name = recipe['label'];
-          final image = recipe['image'];
+          final imageUrl = recipe['images']['REGULAR']['url'];
           final url = recipe['url'];
 
           final newRecipe = Recipe(
             name: name,
-            image: image,
+            imageUrl: imageUrl,
             url: url,
           );
 
@@ -92,7 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         }
       } else {
-        throw Exception('Failed to load data');
+        setState(() {
+          error = true;
+        });
       }
     } catch (e) {
       print('Error: $e');
@@ -127,8 +137,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: recipes.isEmpty // Check if recipes array is empty
-              ? const Text(
-                  "^ Select some allergies in the drawer to get some recipe suggestions!",
+              ? Text(
+                  !error
+                      ? "^ Select some allergies in the drawer to get some recipe suggestions!"
+                      : "You probably hit the api limit on the free plan",
                 )
               : Column(
                   children: <Widget>[
