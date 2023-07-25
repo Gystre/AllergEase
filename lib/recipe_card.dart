@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'recipe.dart';
 
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
 
-  RecipeCard({required this.recipe});
+  const RecipeCard({required this.recipe, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {
-          // Add code to handle tapping the recipe
-          // For example, you can open the URL when the ListTile is tapped.
-          print('Recipe tapped! Opening URL: ${recipe.url}');
+        onTap: () async {
+          if (!await launchUrl(Uri.parse(recipe.url))) {
+            throw Exception('Could not launch url');
+          }
         },
         child: Column(
           children: [
@@ -25,8 +26,7 @@ class RecipeCard extends StatelessWidget {
             ),
             ListTile(
               title: Text(recipe.name),
-              trailing: Icon(Icons
-                  .arrow_forward_ios), // Indicates that the item is clickable
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
           ],
         ),

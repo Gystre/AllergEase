@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'recipe.dart';
 import 'recipe_card.dart';
-import 'config_dev.dart';
+import 'package:allergease/config_dev.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -39,22 +40,64 @@ class _MyHomePageState extends State<MyHomePage> {
   bool soyChecked = false;
   bool glutenChecked = false;
 
-  List<Recipe> recipes = [
-    Recipe(
-      image:
-          "https://edamam-product-images.s3.amazonaws.com/web-img/b67/b678fe8cdc12b246b6ad74f6fdc16406.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDts8V5M44HBFQeRUy2jXr4nm6oK1GRlyUdKKEptJrgIQIgWX0KovhOAwRqP%2Fb%2F1qS%2FXU0D7YfW5%2BZYtob5eBqbDoYquAUIHhAAGgwxODcwMTcxNTA5ODYiDGBDIbRHLmmiRQzpzyqVBRztcRrqjcruOqqCdk6F0Vrmf0oPmnMSpgp3KPvTCuAnZCf0zHplXFdKXAmI32krodfvKUapwI7vFpYIX4ZTI%2F7GLYCu9pIZqLLJCunF9DIx%2BOg%2Bg5H%2FVomz0djF0oDxkwL0xn4HgeXqeTY8w88NzVWniqbVhkY0PI4horaRPOeStvCfVs6Nx6Aq3Gd8%2BXipFoYeDcqWaiYuj0BqWcogXHVIs%2Baj7%2FyPH1Pr0izI2zQcgjtXgoCBcNXoZyC4A25dnYKzyhn10JIU3O8WiiQTZbbkgJe4nRFc%2FKnszwQeN4ME%2FNkPcKnc0kPNKhwPeyzF81DvWX4GhCEXSguj32Pjy1yEioeZ%2FU8JyOKZXZiUlRohtpC3IgMJp0SLsBotvvB7SIlyc8BM7a%2FKzonKg2ZwoETht9pa%2Bbm4FEZTj7bhAt2VS%2F4uPKXt4vudbs%2FIQZbBo93jv9oHNMCgYXkPSL4Mf6kPQIIrv%2FX34JL62rbV7YedELjn%2BHW2bgfyAhtXu24oLOkL2rD38QLbypa3%2B7AW8Y1NvoFvVwnq7H0KsZRCvlx%2FvkQo7V3gelptbUZW%2BdtaOdgWeBFkS74pJoPpQf5CClTVPyjZcMNEXIOnhvVZMUVfr8594%2FXlnMOmeNAcmdmvSkfhiHlp0xmnlOvtDkG4Q9LBEmrv9LggyRKA7zGK%2FwhVKpS6miWz1vL%2Bx%2Fm1R7eYtJ8m80TiMHhjfFFiE%2FnpsmbbWEOUyS%2BUL%2B7yL32HSJWn%2FzNQhtskJJ3DtKXk%2Fi0v%2FuTJyjf3crsAd5T6l6vxwk5PSzkS6pGe0hIgFVGY3WqOMFFhMJLCy2Sb5IDm%2FZzFUVdJcv2AGJqQoXwS6TlTwlatuJpCwWffK2sZJyPkEL9WxVrUfqcwkrv7pQY6sQE%2FVfdSRMEwiMvecbOCSXkYYUGayEQmtAQNQ2WUVDGL%2B%2FLhkgv2V6Sr%2FNF%2BNWVzZVbxT9lztppmIphVPYzF84q%2BdewKpKTEuaGubzSh8Ae4w%2Bv4X5utqt8Tqgh7QAzhEAXBii6GKBq6U2QonHbyg40%2B7nJWePfODqwy1N0%2F%2FjkGJ43seTsUoQBIJpyGJtt2SMXMVlzPDWfEtPxhbI%2BKXozegynQVouqp3Q8HAr6D%2FH7wHw%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230724T211953Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFECKXSGVX%2F20230724%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=d7544baf528cbb6afb1fd8a252dc7d42c858ef0c38ea0a6b5c2ace061db072bd",
-      name: "Easy Mango Chicken Over Coconut Rice",
-      url:
-          "http://realmomkitchen.com/1344/easy-mango-chicken-over-coconut-rice/",
-    ),
-    Recipe(
-      image:
-          "https://edamam-product-images.s3.amazonaws.com/web-img/b67/b678fe8cdc12b246b6ad74f6fdc16406.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDts8V5M44HBFQeRUy2jXr4nm6oK1GRlyUdKKEptJrgIQIgWX0KovhOAwRqP%2Fb%2F1qS%2FXU0D7YfW5%2BZYtob5eBqbDoYquAUIHhAAGgwxODcwMTcxNTA5ODYiDGBDIbRHLmmiRQzpzyqVBRztcRrqjcruOqqCdk6F0Vrmf0oPmnMSpgp3KPvTCuAnZCf0zHplXFdKXAmI32krodfvKUapwI7vFpYIX4ZTI%2F7GLYCu9pIZqLLJCunF9DIx%2BOg%2Bg5H%2FVomz0djF0oDxkwL0xn4HgeXqeTY8w88NzVWniqbVhkY0PI4horaRPOeStvCfVs6Nx6Aq3Gd8%2BXipFoYeDcqWaiYuj0BqWcogXHVIs%2Baj7%2FyPH1Pr0izI2zQcgjtXgoCBcNXoZyC4A25dnYKzyhn10JIU3O8WiiQTZbbkgJe4nRFc%2FKnszwQeN4ME%2FNkPcKnc0kPNKhwPeyzF81DvWX4GhCEXSguj32Pjy1yEioeZ%2FU8JyOKZXZiUlRohtpC3IgMJp0SLsBotvvB7SIlyc8BM7a%2FKzonKg2ZwoETht9pa%2Bbm4FEZTj7bhAt2VS%2F4uPKXt4vudbs%2FIQZbBo93jv9oHNMCgYXkPSL4Mf6kPQIIrv%2FX34JL62rbV7YedELjn%2BHW2bgfyAhtXu24oLOkL2rD38QLbypa3%2B7AW8Y1NvoFvVwnq7H0KsZRCvlx%2FvkQo7V3gelptbUZW%2BdtaOdgWeBFkS74pJoPpQf5CClTVPyjZcMNEXIOnhvVZMUVfr8594%2FXlnMOmeNAcmdmvSkfhiHlp0xmnlOvtDkG4Q9LBEmrv9LggyRKA7zGK%2FwhVKpS6miWz1vL%2Bx%2Fm1R7eYtJ8m80TiMHhjfFFiE%2FnpsmbbWEOUyS%2BUL%2B7yL32HSJWn%2FzNQhtskJJ3DtKXk%2Fi0v%2FuTJyjf3crsAd5T6l6vxwk5PSzkS6pGe0hIgFVGY3WqOMFFhMJLCy2Sb5IDm%2FZzFUVdJcv2AGJqQoXwS6TlTwlatuJpCwWffK2sZJyPkEL9WxVrUfqcwkrv7pQY6sQE%2FVfdSRMEwiMvecbOCSXkYYUGayEQmtAQNQ2WUVDGL%2B%2FLhkgv2V6Sr%2FNF%2BNWVzZVbxT9lztppmIphVPYzF84q%2BdewKpKTEuaGubzSh8Ae4w%2Bv4X5utqt8Tqgh7QAzhEAXBii6GKBq6U2QonHbyg40%2B7nJWePfODqwy1N0%2F%2FjkGJ43seTsUoQBIJpyGJtt2SMXMVlzPDWfEtPxhbI%2BKXozegynQVouqp3Q8HAr6D%2FH7wHw%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230724T211953Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFECKXSGVX%2F20230724%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=d7544baf528cbb6afb1fd8a252dc7d42c858ef0c38ea0a6b5c2ace061db072bd",
-      name: "Easy Mango Chicken Over Coconut Rice",
-      url:
-          "http://realmomkitchen.com/1344/easy-mango-chicken-over-coconut-rice/",
-    )
-  ];
+  List<Recipe> recipes = [];
+
+  Future<void> fetchData() async {
+    recipes.clear();
+
+    const appId = AppConfig.edmamAppId;
+    const appKey = AppConfig.edmamAppKey;
+
+    String url =
+        "https://api.edamam.com/api/recipes/v2?app_id=$appId&app_key=$appKey&type=public&random=true";
+
+    if (wheatChecked) {
+      url += "&health=wheat-free";
+    }
+
+    if (peanutsChecked) {
+      url += "&health=peanut-free";
+    }
+
+    if (soyChecked) {
+      url += "&health=soy-free";
+    }
+
+    if (glutenChecked) {
+      url += "&health=gluten-free";
+    }
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // valid response from the server, parse the data and update the state
+        final json = jsonDecode(response.body);
+        final hits = json['hits'];
+
+        for (var hit in hits) {
+          final recipe = hit['recipe'];
+          final name = recipe['label'];
+          final image = recipe['image'];
+          final url = recipe['url'];
+
+          final newRecipe = Recipe(
+            name: name,
+            image: image,
+            url: url,
+          );
+
+          setState(() {
+            recipes.add(newRecipe);
+          });
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   String getAllergiesText() {
     if (wheatChecked || peanutsChecked || soyChecked || glutenChecked) {
@@ -105,47 +148,54 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
+            const Center(
+              child: Text("I am allergic to..."),
+            ),
             ListTile(
-              title: Text('Wheat'),
+              title: const Text('Wheat'),
               leading: Checkbox(
                 value: wheatChecked,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() {
                     wheatChecked = value!;
                   });
+                  await fetchData();
                 },
               ),
             ),
             ListTile(
-              title: Text('Peanuts'),
+              title: const Text('Peanuts'),
               leading: Checkbox(
                 value: peanutsChecked,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() {
                     peanutsChecked = value!;
                   });
+                  await fetchData();
                 },
               ),
             ),
             ListTile(
-              title: Text('Soy'),
+              title: const Text('Soy'),
               leading: Checkbox(
                 value: soyChecked,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() {
                     soyChecked = value!;
                   });
+                  await fetchData();
                 },
               ),
             ),
             ListTile(
-              title: Text('Gluten'),
+              title: const Text('Gluten'),
               leading: Checkbox(
                 value: glutenChecked,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() {
                     glutenChecked = value!;
                   });
+                  await fetchData();
                 },
               ),
             ),
