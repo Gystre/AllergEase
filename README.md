@@ -40,7 +40,7 @@ Build in debug mode and test on vm to see if anything broke
 flutter build appbundle
 ```
 
-### Create app on play.google.com/console
+### 6. Create app on play.google.com/console
 
 Go the website and create a new app
 
