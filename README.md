@@ -6,7 +6,7 @@ Mobile app written in flutter. Given your allergies suggest some recipes for foo
 
 https://www.shohruhak.com/tech/how_to_publish_flutter_app_on_play_store_beginner_guide/
 
-### Create key.properties file
+### 1. Create key.properties file
 
 In the android folder of the project, create a file called key.properties and add the following lines to it. Replace the password with your own password.
 
@@ -17,7 +17,7 @@ keyAlias=upload
 storeFile=../app/upload-keystore.jks
 ```
 
-### Create a key store file
+### 2. Create a key store file
 
 Run this command and place the generated jks file in the app folder of the android project. If you don't have this file, download jdk and run it from the bin folder.
 
@@ -26,15 +26,15 @@ keytool -genkey -v -keystore upload-keystore.jks -storetype JKS -keyalg RSA -key
 upload
 ```
 
-### modify build.gradle file located at android/app/build.gradle
+### 3. modify build.gradle file located at android/app/build.gradle
 
 Check the linked tutorial for the exact changes to make
 
-### Test the app
+### 4. Test the app
 
 Build in debug mode and test on vm to see if anything broke
 
-### Build app bundle
+### 5.Build app bundle
 
 ```bash
 flutter build appbundle
