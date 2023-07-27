@@ -34,7 +34,7 @@ Check the linked tutorial for the exact changes to make
 
 Build in debug mode and test on vm to see if anything broke
 
-### 5.Build app bundle
+### 5. Build app bundle
 
 ```bash
 flutter build appbundle
